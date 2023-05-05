@@ -21,6 +21,13 @@
                         <input type="number" class="form-control" name="item_amount" th:value="${item!=null?item.getAmount():'0'}" maximum="1000000" min="0">
                     </div>
                     <div class="form-group mt-3">
+                        <label th:text="#{label.country}">
+                        </label>
+                        <select class="form-control" name="country_id">
+                            <option th:each="cnt : ${countries}" th:text="${cnt.name} + ' / ' + ${cnt.getCode()}" th:value="${cnt.getId()}" th:selected="${item!=null && item.getCountry()!=null && cnt.getId().equals(item.getCountry().getId())}"></option>
+                        </select>
+                    </div>
+                    <div class="form-group mt-3">
                         <button class="btn btn-success" th:text="#{button.save}"></button>
                         <button type="button" class="btn btn-danger ml-2" data-bs-toggle="modal" data-bs-target="#deleteModal" th:text="#{button.delete}">
                         </button>

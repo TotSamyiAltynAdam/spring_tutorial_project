@@ -1,6 +1,8 @@
 package kz.springboot.springbootdemo2.services.impl;
 
+import kz.springboot.springbootdemo2.entities.Countries;
 import kz.springboot.springbootdemo2.entities.ShopItems;
+import kz.springboot.springbootdemo2.repositories.CountryRepository;
 import kz.springboot.springbootdemo2.repositories.ShopItemRepository;
 import kz.springboot.springbootdemo2.services.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Autowired
     private ShopItemRepository shopItemRepository;
+    @Autowired
+    private CountryRepository countryRepository;
 
     @Override
     public ShopItems addItem(ShopItems item) {
@@ -37,5 +41,25 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ShopItems saveItem(ShopItems item) {
         return shopItemRepository.save(item);
+    }
+
+    @Override
+    public List<Countries> getAllCountries() {
+        return countryRepository.findAll();
+    }
+
+    @Override
+    public Countries addCountry(Countries country) {
+        return countryRepository.save(country);
+    }
+
+    @Override
+    public Countries saveCountry(Countries country) {
+        return countryRepository.save(country);
+    }
+
+    @Override
+    public Countries getCountry(Long id) {
+        return countryRepository.getOne(id);
     }
 }
