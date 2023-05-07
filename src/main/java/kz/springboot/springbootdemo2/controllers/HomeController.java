@@ -2,6 +2,7 @@ package kz.springboot.springbootdemo2.controllers;
 
 import kz.springboot.springbootdemo2.db.DBManager;
 import kz.springboot.springbootdemo2.db.Items;
+import kz.springboot.springbootdemo2.entities.Categories;
 import kz.springboot.springbootdemo2.entities.Countries;
 import kz.springboot.springbootdemo2.entities.ShopItems;
 import kz.springboot.springbootdemo2.services.ItemService;
@@ -41,7 +42,14 @@ public class HomeController {
                           @RequestParam(name="country_id",defaultValue = "0") Long id){
         Countries country = itemService.getCountry(id);
         if(country != null) {
-            itemService.addItem(new ShopItems(null, name, price, amount, country));
+
+            ShopItems shopItem = new ShopItems();
+            shopItem.setName(name);
+            shopItem.setPrice(price);
+            shopItem.setAmount(amount);
+            shopItem.setCountry(country);
+
+            itemService.addItem(shopItem);
         }
         return "redirect:/";
     }
@@ -53,6 +61,10 @@ public class HomeController {
 
         List<Countries> countries = itemService.getAllCountries();
         model.addAttribute("countries",countries);
+
+        List<Categories> categories = itemService.getAllCategories();
+        model.addAttribute("categories",categories);
+
         return "details";
     }
     @PostMapping(value = "/saveItem")
@@ -79,6 +91,55 @@ public class HomeController {
         ShopItems item = itemService.getItem(id);
         if(item!=null){
             itemService.deleteItem(item);
+        }
+        return "redirect:/";
+    }
+
+    @PostMapping(value = "/assignCategory")
+    public String assignCategory(@RequestParam(name="item_id") Long itemId,
+                                 @RequestParam(name="category_id") Long categoryId){
+        Categories cat = itemService.getCategory(categoryId);
+        if(cat!=null){
+            ShopItems item = itemService.getItem(itemId);
+            if(item!=null){
+                List<Categories> categories = item.getCategories();
+                if(categories==null){
+                    categories = new ArrayList<>();
+                }
+                boolean found = false;
+
+                for(Categories categories1: item.getCategories()){
+                    if(categories1.getId().equals(categoryId)) {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if(!found) categories.add(cat);
+
+                itemService.saveItem(item);
+                return "redirect:/details/"+itemId;
+            }
+        }
+        return "redirect:/";
+    }
+    @PostMapping(value = "/reAssignCategory")
+    public String reAssignCategory(@RequestParam(name="item_id") Long itemId,
+                                   @RequestParam(name="category_id") Long categoryId){
+        Categories category = itemService.getCategory(categoryId);
+        if(category!=null){
+            ShopItems item = itemService.getItem(itemId);
+            if(item!=null){
+                List<Categories> categories = item.getCategories();
+                for(Categories cat : categories){
+                    if(cat.getId().equals(categoryId)) {
+                        categories.remove(cat);
+                        break;
+                    }
+                }
+                itemService.saveItem(item);
+                return "redirect:/details/"+itemId;
+            }
         }
         return "redirect:/";
     }

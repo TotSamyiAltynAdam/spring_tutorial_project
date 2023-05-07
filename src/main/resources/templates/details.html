@@ -55,5 +55,43 @@
                 </div>
             </div>
         </div>
+
+        <div class="row mt-5">
+            <div class="col-6 offset-3">
+                <table class="table table-striped">
+                    <tbody>
+                        <tr th:each="cat : ${item.getCategories()}">
+                            <form th:action="@{'/reAssignCategory'}" method="post">
+                                <input type="hidden" th:value="${item.getId()}" name="item_id">
+                                <input type="hidden" th:value="${cat.getId()}" name="category_id">
+                                <td th:text="${cat.getName()}"></td>
+                                <td>
+                                    <button class="btn btn-danger btn-sm">-</button>
+                                </td>
+                            </form>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-6 offset-3">
+                <table class="table table-striped">
+                    <tbody>
+                        <tr th:each="cat : ${categories}">
+                            <form th:action="@{'/assignCategory'}" method="post">
+                                <input type="hidden" th:value="${item.getId()}" name="item_id">
+                                <input type="hidden" th:value="${cat.getId()}" name="category_id">
+                                <td th:text="${cat.getName()}"></td>
+                                <td width="10%">
+                                    <button class="btn btn-success btn-sm">+</button>
+                                </td>
+                            </form>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </html>
